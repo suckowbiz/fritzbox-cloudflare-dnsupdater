@@ -1,0 +1,26 @@
+# https://github.com/golangci/golangci-lint#config-file
+run:
+  deadline: 30s
+  tests: true
+
+linters-settings:
+  golint:
+    min-confidence: 0.8
+  gocritic:
+    disabled-checks:
+      - appendAssign
+  lll:
+    # max line length, lines longer will be reported. Default is 120.
+    # '\t' is counted as 1 character by default, and can be changed with the tab-width option
+    line-length: 120
+
+linters:
+  enable-all: true
+  disable:
+    - prealloc
+    - maligned
+    - gochecknoglobals
+    - gosec
+
+issues:
+  exclude-use-default: false
