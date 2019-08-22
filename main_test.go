@@ -9,6 +9,7 @@ import (
 )
 
 func TestRESTEndpointsAvailableIntegration(t *testing.T) {
+	// nolint
 	assert := assert.New(t)
 
 	tests := []struct {
@@ -26,12 +27,17 @@ func TestRESTEndpointsAvailableIntegration(t *testing.T) {
 	})
 	go func() {
 		log.Fatal(server.ListenAndServe())
+		//nolint
 		defer server.Close()
 	}()
 
 	for _, test := range tests {
 		req, _ := http.NewRequest(test.method, test.endpoint, nil)
 		res, err := http.DefaultClient.Do(req)
+		if res != nil {
+			//nolint
+			defer res.Body.Close()
+		}
 		assert.NotNil(res)
 		assert.NoError(err)
 		assert.NotEqual(http.StatusNotFound, res.StatusCode)

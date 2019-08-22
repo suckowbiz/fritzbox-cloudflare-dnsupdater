@@ -9,10 +9,13 @@ import (
 )
 
 type DNSAer interface {
-	List(zoneID string, recordFetcher func(zoneID string, rr cloudflare.DNSRecord) ([]cloudflare.DNSRecord, error)) ([]cloudflare.DNSRecord, error)
-	UpdateIP(ip string, records []cloudflare.DNSRecord, recordUpdater func(zoneID, recordID string, rr cloudflare.DNSRecord) error) error
+	List(zoneID string, recordFetcher func(zoneID string, rr cloudflare.DNSRecord) ([]cloudflare.DNSRecord,
+		error)) ([]cloudflare.DNSRecord, error)
+	UpdateIP(ip string, records []cloudflare.DNSRecord, recordUpdater func(zoneID, recordID string,
+		rr cloudflare.DNSRecord) error) error
 }
 
+// DNSA is a representation of a DNS address record (aka "A" record).
 type DNSA struct {
 	recordFilter cloudflare.DNSRecord
 	recordType   string
