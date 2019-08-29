@@ -35,7 +35,7 @@ func (d DNSA) List(zoneID string, recordFetcher func(zoneID string, rr cloudflar
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("fetched: %d DNS records of type: '%s'", len(recs), d.recordFilter.Type)
+	log.Printf("fetched: %d DNS records of type: %q", len(recs), d.recordFilter.Type)
 	return recs, nil
 }
 
@@ -55,9 +55,9 @@ func (d DNSA) UpdateIP(ip string, records []cloudflare.DNSRecord, recordUpdater 
 		}
 		err := recordUpdater(record.ZoneID, record.ID, update)
 		if err != nil {
-			return errors.Wrapf(err, "failure to update DNS record: %s", update.Name)
+			return errors.Wrapf(err, "failure to update DNS record: %q", update.Name)
 		}
-		log.Printf("updated DNS record: %s to: %s", update.Name, update.Content)
+		log.Printf("updated DNS record: %q to: %q", update.Name, update.Content)
 	}
 	return nil
 }
