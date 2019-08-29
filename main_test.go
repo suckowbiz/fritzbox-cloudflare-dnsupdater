@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -39,8 +41,8 @@ func TestRESTEndpointsAvailableIntegration(t *testing.T) {
 			//nolint
 			defer res.Body.Close()
 		}
-		assert.NotNil(res)
-		assert.NoError(err)
+		require.NoError(t, err)
+		require.NotNil(t, res)
 		assert.NotEqual(http.StatusNotFound, res.StatusCode)
 	}
 }
