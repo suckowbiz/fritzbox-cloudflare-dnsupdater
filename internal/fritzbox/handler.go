@@ -26,7 +26,6 @@ func NewUpdateHandler(apiProvider func(token string, opts ...api.Option) (*api.A
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		log.Printf("creating api with token: %s", token)
 		api, err := apiProvider(token)
 		if err != nil {
 			log.Print(err)
