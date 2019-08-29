@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -30,9 +31,10 @@ func TestRESTEndpointsAvailableIntegration(t *testing.T) {
 	})
 	go func() {
 		log.Fatal(server.ListenAndServe())
-		//nolint
-		defer server.Close()
 	}()
+
+	// Avoid: Post http://localhost:61978/update: dial tcp 127.0.0.1:61978: connect: connection refused
+	time.Sleep(time.Second * 5)
 
 	for _, test := range tests {
 		req, _ := http.NewRequest(test.method, test.endpoint, nil)
