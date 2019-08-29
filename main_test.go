@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,18 +12,19 @@ import (
 func TestRESTEndpointsAvailableIntegration(t *testing.T) {
 	// nolint
 	assert := assert.New(t)
+	port := 61978
 
 	tests := []struct {
 		endpoint string
 		method   string
 	}{
 		{
-			endpoint: "http://localhost:1978/update",
+			endpoint: "http://localhost:" + strconv.Itoa(port) + "/update",
 			method:   http.MethodPost,
 		},
 	}
 
-	server := newServer(61978, func(writer http.ResponseWriter, request *http.Request) {
+	server := newServer(port, func(writer http.ResponseWriter, request *http.Request) {
 
 	})
 	go func() {
