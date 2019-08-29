@@ -1,8 +1,8 @@
 FROM golang:latest
+LABEL maintainer="Tobias Suckow <tobias@suckow.biz>"
 
 WORKDIR /app
 ADD . /app/
-RUN go test ./...
-RUN go build -o binary .
+RUN make
 
 CMD ["/app/binary"]
