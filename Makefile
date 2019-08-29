@@ -1,6 +1,6 @@
 all: tests tidy binary
 
-docker-images:
+docker-image:
 	docker-compose build --no-cache
 
 test: tests

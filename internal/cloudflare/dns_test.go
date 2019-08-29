@@ -6,6 +6,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/cloudflare/cloudflare-go"
@@ -18,19 +20,27 @@ func TestMain(m *testing.M) {
 	os.Exit(exitVal)
 }
 
-func TestDNSARecords(t *testing.T) {
+func TestListDNSARecords(t *testing.T) {
+	require := require.New(t)
+	assert := assert.New(t)
+
 	zoneID := "4711"
+	want := cloudflare.DNSRecord{
+		ID:   "42",
+		Type: "A",
+	}
 
 	apiMock := *new(APIMock)
 	apiMock.On("DNSRecord", zoneID, mock.MatchedBy(func(record cloudflare.DNSRecord) bool {
 		return record.Type == "A"
-	})).Return([]cloudflare.DNSRecord{}, nil)
+	})).Return([]cloudflare.DNSRecord{want}, nil)
 
-	rec, err := NewDNSA().List(zoneID, apiMock.DNSRecord)
-
-	assert := assert.New(t)
-	assert.NoError(err)
-	assert.NotNil(rec)
+	got, err := NewDNSA().List(zoneID, apiMock.DNSRecord)
+	require.NoError(err)
+	require.NotNil(got)
+	assert.NotEmpty(got)
+	assert.Len(got, 1)
+	assert.Equal(want.ID, got[0].ID)
 
 	apiMock.AssertExpectations(t)
 }
@@ -65,7 +75,7 @@ func TestUpdateDNSARecordsIP(t *testing.T) {
 		})).Return(nil)
 
 	err := NewDNSA().UpdateIP(ip, []cloudflare.DNSRecord{givenRecord, {Type: "AAA"}}, apiMock.UpdateDNSRecord)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	apiMock.AssertExpectations(t)
 }

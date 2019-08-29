@@ -1,4 +1,3 @@
-//nolint:unparam
 package fritzbox
 
 import (

@@ -10,11 +10,13 @@ import (
 	api "github.com/cloudflare/cloudflare-go"
 )
 
+// DNSer combines functionality to handle DNS type "A" records.
 type DNSer interface {
 	DNSARecords(zoneID string, recordFetcher func(zoneID string, rr api.DNSRecord) ([]api.DNSRecord,
 		error)) ([]api.DNSRecord, error)
 }
 
+// NewUpdateHandler creates a new instance of a http handler to answer DNS type "A" update requests.
 func NewUpdateHandler(apiProvider func(token string, opts ...api.Option) (*api.API, error),
 	dnsAer cloudflare.DNSAer) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {

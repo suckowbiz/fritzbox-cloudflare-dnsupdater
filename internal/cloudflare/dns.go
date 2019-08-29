@@ -8,6 +8,7 @@ import (
 	"github.com/cloudflare/cloudflare-go"
 )
 
+// DNSAer provides functionality to work with DNS records.
 type DNSAer interface {
 	List(zoneID string, recordFetcher func(zoneID string, rr cloudflare.DNSRecord) ([]cloudflare.DNSRecord,
 		error)) ([]cloudflare.DNSRecord, error)
@@ -21,24 +22,26 @@ type DNSA struct {
 	recordType   string
 }
 
+// NewDNSA constructs a DNSAer that is able to handle DNS a records.
 func NewDNSA() DNSAer {
 	filter := cloudflare.DNSRecord{Type: "A"}
 	return DNSA{recordFilter: filter, recordType: "A"}
 }
 
-func (d DNSA) List(zoneID string, recordFetcher func(zoneID string,
-	rr cloudflare.DNSRecord) ([]cloudflare.DNSRecord,
+// List fetches and returns all DNS A records given vor the zone specified.
+func (d DNSA) List(zoneID string, recordFetcher func(zoneID string, rr cloudflare.DNSRecord) ([]cloudflare.DNSRecord,
 	error)) ([]cloudflare.DNSRecord, error) {
 	recs, err := recordFetcher(zoneID, d.recordFilter)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("retrieved %d records to update", len(recs))
+	log.Printf("fetched: %d DNS records of type: '%s'", len(recs), d.recordFilter.Type)
 	return recs, nil
 }
 
-func (d DNSA) UpdateIP(ip string, records []cloudflare.DNSRecord, recordUpdater func(zoneID,
-	recordID string, rr cloudflare.DNSRecord) error) error {
+// UpdateIP performs an update of the IP of the given DNS records in case those are of type 'A'.
+func (d DNSA) UpdateIP(ip string, records []cloudflare.DNSRecord, recordUpdater func(zoneID, recordID string,
+	rr cloudflare.DNSRecord) error) error {
 	for _, record := range records {
 		if record.Type != d.recordType {
 			continue
@@ -52,9 +55,9 @@ func (d DNSA) UpdateIP(ip string, records []cloudflare.DNSRecord, recordUpdater 
 		}
 		err := recordUpdater(record.ZoneID, record.ID, update)
 		if err != nil {
-			return errors.Wrapf(err, "failure to update record: %s", update.Name)
+			return errors.Wrapf(err, "failure to update DNS record: %s", update.Name)
 		}
-		log.Printf("updated record: %s with ip: %s", update.Name, update.Content)
+		log.Printf("updated DNS record: %s to: %s", update.Name, update.Content)
 	}
 	return nil
 }

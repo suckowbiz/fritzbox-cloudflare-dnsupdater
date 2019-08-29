@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"fritzbox-cloudflare-dnsupdater/internal/cloudflare"
 	"fritzbox-cloudflare-dnsupdater/internal/fritzbox"
 	"log"
@@ -14,16 +15,20 @@ import (
 func main() {
 	port, err := getenvInt("FCD_PORT")
 	if err != nil {
-		log.Fatal("environment variable FCD_PORT must contain a port number to run the REST endpoint")
+		log.Fatalf("webserver startup requires a valid port number. Please set environment variable 'FCD_PORT' "+
+			"accordingly. %v", err)
 	}
-	dnsAer := cloudflare.NewDNSA()
-	handler := fritzbox.NewUpdateHandler(api.NewWithAPIToken, dnsAer)
-	s := newServer(port, handler)
-	log.Fatal(s.ListenAndServe())
+	dnsa := cloudflare.NewDNSA()
+	handler := fritzbox.NewUpdateHandler(api.NewWithAPIToken, dnsa)
+	server := newServer(port, handler)
+	log.Fatal(server.ListenAndServe())
 }
 
 func getenvInt(key string) (int, error) {
 	envStr := os.Getenv(key)
+	if envStr == "" {
+		return 0, fmt.Errorf("'%s' must not be empty", key)
+	}
 	envInt, err := strconv.Atoi(envStr)
 	if err != nil {
 		return 0, err
