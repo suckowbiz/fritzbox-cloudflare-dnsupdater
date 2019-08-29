@@ -22,7 +22,7 @@ func TestRESTEndpointsAvailableIntegration(t *testing.T) {
 		},
 	}
 
-	server := newServer(1978, func(writer http.ResponseWriter, request *http.Request) {
+	server := newServer(61978, func(writer http.ResponseWriter, request *http.Request) {
 
 	})
 	go func() {
