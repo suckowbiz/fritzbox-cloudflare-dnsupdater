@@ -10,7 +10,6 @@ import (
 )
 
 func TestRESTEndpointsAvailableIntegration(t *testing.T) {
-	// nolint
 	assert := assert.New(t)
 	port := 61978
 
