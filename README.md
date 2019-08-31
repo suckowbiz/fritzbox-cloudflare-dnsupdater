@@ -5,6 +5,10 @@
  
  It was developed to address the special needs when populating IP address changes received at a [AVM FRITZ!Box](https://avm.de/produkte/fritzbox/) to Cloudflare.
  
+## Docker Image
+
+A Docker image is available from official Docker registry at `suckowbiz/fritzbox-cloudflare-dnsupdater`.
+
 ## Usage
 
 1. Start `fritzbox-cloudflare-dnsupdater` (e.g. on a machine in the local AVM FRITZ!Box network:
