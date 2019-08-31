@@ -20,14 +20,15 @@ A Docker image is available from official Docker registry at `suckowbiz/fritzbox
 1. Edit AVM FRITZ!Box: `fritzbox > Internet > Freigaben > DynDNS (Benutzerdefiniert)`:
 
     - **DynDNS-Anbieter**: `Benutzerdefiniert`
-    - **Update-URL**: `http://TODO1/update?token=<pass>&ip=<ipaddr>&zone_identifier=TODO2`  
+    - **Update-URL**: `http://TODO1/update?token=<pass>&ip=<ipaddr>&zone_id=TODO2`  
       
       Where:
       
       - `<ipaddr` automatically replaced with the new IP
       - `<pass>` automatically replaced with value of `Kennwort`
       - `TODO1` address of the server that runs `fritzbox-cloudflare-dnsupdater`
-      - `TODO2` Zone ID of your Site managed at Cloudflare. This Zone ID is present on the Cloudflare Dashboard: `<Site> > Overview > API/Zone ID`.
+      - `TODO2` Zone ID of your Site managed at Cloudflare. To support many Cloudflare sites the `zone_id` field can
+       be repeated. The Zone ID is present on the Cloudflare Dashboard: `<Site> > Overview > API/Zone ID`.
 
          The Zone ID can also be fetched from the Cloudflare API with:
 

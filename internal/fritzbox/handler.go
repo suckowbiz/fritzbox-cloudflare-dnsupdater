@@ -20,7 +20,7 @@ type DNSer interface {
 func NewUpdateHandler(apiProvider func(token string, opts ...api.Option) (*api.API, error),
 	dnsAer cloudflare.DNSAer) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		zoneID, token, ip, err := validateUpdateQuery(request.URL.RawQuery, url.ParseQuery)
+		zoneIDs, token, ip, err := validateUpdateQuery(request.URL.RawQuery, url.ParseQuery)
 		if err != nil {
 			log.Print("Error: ", err)
 			http.Error(writer, err.Error(), http.StatusBadRequest)
@@ -32,42 +32,46 @@ func NewUpdateHandler(apiProvider func(token string, opts ...api.Option) (*api.A
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		rr, err := dnsAer.List(zoneID, api.DNSRecords)
-		if err != nil {
-			log.Print(err)
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		err = dnsAer.UpdateIP(ip, rr, api.UpdateDNSRecord)
-		if err != nil {
-			log.Print(err)
-			http.Error(writer, err.Error(), http.StatusInternalServerError)
-			return
+
+		for _, zoneID := range zoneIDs {
+			log.Printf("Updating zone: %q", zoneID)
+			rr, err := dnsAer.List(zoneID, api.DNSRecords)
+			if err != nil {
+				log.Print(err)
+				http.Error(writer, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			err = dnsAer.UpdateIP(ip, rr, api.UpdateDNSRecord)
+			if err != nil {
+				log.Print(err)
+				http.Error(writer, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 }
 
-func validateUpdateQuery(rawQuery string, parser func(query string) (url.Values, error)) (zoneID string, token string,
+func validateUpdateQuery(rawQuery string, parser func(query string) (url.Values, error)) (zoneID []string, token string,
 	ip string, err error) {
 	values, err := parser(rawQuery)
 	if err != nil {
-		return "", "", "", err
+		return []string{}, "", "", err
 	}
 	if len(values) == 0 {
-		return "", "", "", errors.New("url query must not be empty")
+		return []string{}, "", "", errors.New("url query must not be empty")
 	}
 
 	token = values.Get("token")
 	if token == "" {
-		return "", "", "", errors.New("'token' must not be absent")
+		return []string{}, "", "", errors.New("'token' must not be absent")
 	}
-	zoneID = values.Get("zone_identifier")
-	if zoneID == "" {
-		return "", "", "", errors.New("'zone_identifier' must not be absent")
+	zoneID, ok := values["zone_id"]
+	if !ok {
+		return []string{}, "", "", errors.New("'zone_id' must not be absent")
 	}
 	ip = values.Get("ip")
 	if ip == "" {
-		return "", "", "", errors.New("'ip' must not be absent")
+		return []string{}, "", "", errors.New("'ip' must not be absent")
 	}
 	return
 }
