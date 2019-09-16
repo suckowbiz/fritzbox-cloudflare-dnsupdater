@@ -12,8 +12,12 @@ tidy:
 	go mod tidy
 	go mod verify
 
-# https://medium.com/@diogok/on-golang-static-binaries-cross-compiling-and-plugins-1aed33499671
-# Build with "netgo" that enforces the use of go DNS resolver. Without the error.
+# Build with:
+# - a  						to force build
+# - ldflags 
+#	-w 						do not include debug information to keep file size low
+#	-extldflags "-static"	to run in a tiny Docker image "scratch"
+# - "netgo" 				enforces the use of go DNS resolver and resolves "standard_init_linux.go:211: exec user process caused "no such file or directory"
 binary:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 		-a \
