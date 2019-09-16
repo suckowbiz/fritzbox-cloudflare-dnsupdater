@@ -12,5 +12,14 @@ tidy:
 	go mod tidy
 	go mod verify
 
+# Build with:
+# - a  				to force build
+# - ldflags '-w' 	do not include debug information to keep file size low
+# - "netgo" 		enforces the use of go DNS resolver and resolves "standard_init_linux.go:211: exec user process caused "no such file or directory"
 binary:
-	go build -o binary .
+	GOOS=linux GOARCH=amd64 go build \
+		-a \
+		-tags netgo \
+		-ldflags '-w' \
+		-o binary \
+		.

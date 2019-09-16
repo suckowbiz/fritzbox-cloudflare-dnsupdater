@@ -1,8 +1,10 @@
-FROM golang:latest
+FROM golang:latest as builder
 LABEL maintainer="Tobias Suckow <tobias@suckow.biz>"
-
-WORKDIR /app
-ADD . /app/
+WORKDIR /src
+COPY . /src/
 RUN make
 
-CMD ["/app/binary"]
+FROM alpine:latest
+RUN apk --update add ca-certificates
+COPY --from=builder /src/binary .
+CMD ["./binary"]
