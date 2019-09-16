@@ -4,7 +4,6 @@ WORKDIR /src
 COPY . /src/
 RUN make
 
-FROM alpine:latest
-RUN apk --update add ca-certificates
+FROM scratch
 COPY --from=builder /src/binary .
 CMD ["./binary"]
