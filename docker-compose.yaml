@@ -6,5 +6,3 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "80:80"
-    environment:
-      FCD_PORT: 80
