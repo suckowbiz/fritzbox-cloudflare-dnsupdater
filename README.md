@@ -14,7 +14,7 @@ A Docker image is available from official Docker registry at `suckowbiz/fritzbox
 1. Start `fritzbox-cloudflare-dnsupdater` (e.g. on a machine in the local AVM FRITZ!Box network:
 
     ```bash
-    $ docker run --expose 80 --env FCD_PORT=80 suckowbiz/fritzbox-cloudflare-dnsupdater
+    $ docker run -p 80:80 suckowbiz/fritzbox-cloudflare-dnsupdater
     ```
 
 1. Edit AVM FRITZ!Box: `fritzbox > Internet > Freigaben > DynDNS (Benutzerdefiniert)`:
