@@ -24,7 +24,7 @@ A Docker image is available from official Docker registry at `suckowbiz/fritzbox
       
       Where:
       
-      - `<ipaddr` automatically replaced with the new IP
+      - `<ipaddr>` automatically replaced with the new IP
       - `<pass>` automatically replaced with value of `Kennwort`
       - `TODO1` address of the server that runs `fritzbox-cloudflare-dnsupdater`
       - `TODO2` Zone ID of your Site managed at Cloudflare. To support many Cloudflare sites the `zone_id` field can
